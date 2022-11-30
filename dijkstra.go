@@ -4,14 +4,45 @@ import (
 	"math"
 )
 
-//Shortest calculates the shortest path from src to dest
+// Shortest calculates the shortest path from src to dest
 func (g *Graph) Shortest(src, dest int) (BestPath, error) {
 	return g.evaluate(src, dest, true)
 }
 
-//Longest calculates the longest path from src to dest
+// Longest calculates the longest path from src to dest
 func (g *Graph) Longest(src, dest int) (BestPath, error) {
 	return g.evaluate(src, dest, false)
+}
+
+const NODEST = -1
+
+// GetAllMappedDistances calculates the distances of all reachable vertices from src
+func (g *Graph) GetAllMappedDistances(src int) (map[string]int, error) {
+
+	distances := map[string]int{}
+
+	_, err := g.Shortest(src, NODEST)
+
+	if err != nil {
+		return distances, err
+	}
+
+	// Get distances of all vertices and map them to str
+	for _, vert := range g.Verticies {
+
+		strID, err := g.GetMapped(vert.ID)
+
+		if err != nil {
+			return distances, err
+		}
+
+		distance := vert.GetDistance()
+
+		distances[strID] = distance
+
+	}
+
+	return distances, nil
 }
 
 func (g *Graph) setup(shortest bool, src int, list int) {
@@ -112,7 +143,10 @@ func (g *Graph) postSetupEvaluate(src, dest int, shortest bool) (BestPath, error
 		oldCurrent = current.ID
 		//If the current distance is already worse than the best try another Vertex
 		if shortest && current.distance >= g.best {
-			continue
+			// If there is no dest, explore all vertices
+			if dest != NODEST {
+				continue
+			}
 		}
 		for v, dist := range current.arcs {
 			//If the arc has better access, than the current best, update the Vertex being touched
@@ -130,7 +164,11 @@ func (g *Graph) postSetupEvaluate(src, dest int, shortest bool) (BestPath, error
 					// useless Verticies
 					g.best = current.distance + dist
 					g.visitedDest = true
-					continue // Do not push if dest
+
+					// If there is no dest, explore all vertices
+					if dest != NODEST {
+						continue // Do not push if dest
+					}
 				}
 				//Push this updated Vertex into the list to be evaluated, pushes in
 				// sorted form
@@ -138,7 +176,14 @@ func (g *Graph) postSetupEvaluate(src, dest int, shortest bool) (BestPath, error
 			}
 		}
 	}
-	return g.finally(src, dest)
+
+	// If there is no dest, don't return any path
+	if dest == NODEST {
+		return BestPath{}, nil
+	} else {
+		return g.finally(src, dest)
+	}
+
 }
 
 func (g *Graph) finally(src, dest int) (BestPath, error) {
@@ -148,11 +193,11 @@ func (g *Graph) finally(src, dest int) (BestPath, error) {
 	return g.bestPath(src, dest), nil
 }
 
-//BestPath contains the solution of the most optimal path
+// BestPath contains the solution of the most optimal path
 type BestPath struct {
 	Distance int64
 	Path     []int
 }
 
-//BestPaths contains the list of best solutions
+// BestPaths contains the list of best solutions
 type BestPaths []BestPath
