@@ -164,11 +164,7 @@ func (g *Graph) postSetupEvaluate(src, dest int, shortest bool) (BestPath, error
 					// useless Verticies
 					g.best = current.distance + dist
 					g.visitedDest = true
-
-					// If there is no dest, explore all vertices
-					if dest != NODEST {
-						continue // Do not push if dest
-					}
+					continue // Do not push if dest
 				}
 				//Push this updated Vertex into the list to be evaluated, pushes in
 				// sorted form
