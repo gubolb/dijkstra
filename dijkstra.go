@@ -16,8 +16,8 @@ func (g *Graph) Longest(src, dest int) (BestPath, error) {
 
 const NODEST = -1
 
-// GetAllMappedDistances calculates the distances of all reachable vertices from src
-func (g *Graph) GetAllMappedDistances(src int) (map[string]int, error) {
+// GetAllShortestMappedDistances calculates the shortest distances of all reachable vertices from src
+func (g *Graph) GetAllShortestMappedDistances(src int) (map[string]int, error) {
 
 	distances := map[string]int{}
 
