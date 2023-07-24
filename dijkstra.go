@@ -17,9 +17,9 @@ func (g *Graph) Longest(src, dest int) (BestPath, error) {
 const NODEST = -1
 
 // GetAllShortestMappedDistances calculates the shortest distances of all reachable vertices from src
-func (g *Graph) GetAllShortestMappedDistances(src int) (map[string]int, error) {
+func (g *Graph) GetAllShortestMappedDistances(src int) (map[string]int64, error) {
 
-	distances := map[string]int{}
+	distances := map[string]int64{}
 
 	_, err := g.Shortest(src, NODEST)
 

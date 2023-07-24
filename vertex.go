@@ -67,7 +67,7 @@ func (v *Vertex) GetArc(Destination int) (distance int64, ok bool) {
 	return
 }
 
-//GetDistance returns the distance computed in the postSetupEvaluate function in dijkstra.go
-func (v *Vertex) GetDistance() int {
-	return int(v.distance)
+// GetDistance returns the distance computed in the postSetupEvaluate function in dijkstra.go
+func (v *Vertex) GetDistance() int64 {
+	return v.distance
 }
